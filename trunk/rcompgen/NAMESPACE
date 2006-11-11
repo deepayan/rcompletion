@@ -1,0 +1,12 @@
+
+import(utils)
+importFrom(methods, slotNames)
+
+
+export(rc.status,           # helps debug
+       rc.getOption,        # options...
+       rc.options,          #  (user settable suffixes)
+       rc.settings)         # settings (ops, ns, args)
+
+       
+
