@@ -5,7 +5,8 @@
 
 assign("settings",
        list(ops = TRUE, ns = TRUE, args = TRUE,
-            ipck = FALSE, S3 = TRUE, data = TRUE),
+            ipck = FALSE, S3 = TRUE, data = TRUE,
+            help = TRUE),
        env = .CompletionEnv)
 
 
