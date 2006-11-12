@@ -2,7 +2,7 @@
 2006-11-11:
 
 	added support for special completions inside library(), require()
-	and data(), bumped version to 0.1-2
+	and data(); help completions after "?"; bumped version to 0.1-2
 
 2006-11-10: 
 

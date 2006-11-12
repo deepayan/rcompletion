@@ -19,7 +19,7 @@
   
 \usage{
 
-rc.settings(ops, ns, args, ipck, S3, data)
+rc.settings(ops, ns, args, ipck, S3, data, help)
 rc.status()
 
 rc.getOption(name)
@@ -28,7 +28,7 @@ rc.options(\dots)
 }
 
 \arguments{
-  \item{ops, ns, args, ipck, S3, data}{
+  \item{ops, ns, args, ipck, S3, data, help}{
 
     logical, turning some optional completion features on and off.
 
@@ -49,6 +49,9 @@ rc.options(\dots)
 
       \item{\code{data}:}{ enables completion of data sets (including
 	those already visible) inside \code{\link{data}} }
+
+      \item{\code{help}:}{ enables completion of help requests starting
+	with a question mark, by looking inside help index files }
 
     }
 

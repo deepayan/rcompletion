@@ -49,7 +49,7 @@
 
 ## modifies settings:
 
-rc.settings <- function(ops, ns, args, ipck, S3, data)
+rc.settings <- function(ops, ns, args, ipck, S3, data, help)
 {
     checkAndChange <- function(what, value)
     {
@@ -64,6 +64,7 @@ rc.settings <- function(ops, ns, args, ipck, S3, data)
     if (!missing(ipck)) checkAndChange("ipck", ipck)
     if (!missing(S3))   checkAndChange("S3", S3)
     if (!missing(data)) checkAndChange("data", S3)
+    if (!missing(help)) checkAndChange("help", S3)
     invisible()
 }
 
@@ -168,6 +169,31 @@ specialOpLocs <- function(text)
 }
 
 
+
+## accessing the help system: should allow anything with an index entry
+
+matchAvailableTopics <-
+    function(text)
+{
+    if (length(text) != 1 || text == "") return (character(0))
+    ll <- installed.packages()[.packages(), "LibPath"]
+    indexFiles <- file.path(ll, names(ll), "help", "AnIndex")
+    unique(unlist(lapply(indexFiles,
+                         function(f) {
+                             foo <-
+                                 scan(f, what = list("", ""),
+                                      sep = "\t",
+                                      quote = "",
+                                      na.strings = "",
+                                      quiet = TRUE)[[1]]
+                             grep(sprintf("^%s", makeRegexpSafe(text)),
+                                  foo, value = TRUE)
+                         })))
+}
+
+
+
+
 ## this is for requests of the form ?suffix[TAB] or prefix?suffix[TAB]
 
 ## can be improved when prefix is non-trivial, but that is rarely used
@@ -177,7 +203,11 @@ specialOpLocs <- function(text)
 
 helpCompletions <- function(prefix, suffix)
 {
-    nc <- normalCompletions(suffix, check.mode = FALSE)
+    nc <-
+        if (.CompletionEnv$settings[["help"]])
+            matchAvailableTopics(suffix)
+        else
+            normalCompletions(suffix, check.mode = FALSE)
     if (length(nc) > 0) sprintf("%s?%s", prefix, nc)
     else character(0)
 }
@@ -531,7 +561,7 @@ functionArgs <-
              add.args = rc.getOption("funarg.suffix"))
 {
     if (length(fun) < 1 || any(fun == "")) return(character(0))
-    specialComps <- specialFunctionArgs(fun, text)
+    specialFunArgs <- specialFunctionArgs(fun, text)
     if (S3methods && exists(fun, mode = "function"))
         fun <-
             c(fun,
@@ -546,7 +576,7 @@ functionArgs <-
              allArgs, value = TRUE)
     if (length(ans) > 0 && !is.null(add.args))
         ans <- sprintf("%s%s", ans, add.args)
-    c(specialComps, ans)
+    c(specialFunArgs, ans)
 }
 
 
