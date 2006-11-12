@@ -49,7 +49,7 @@
 
 ## modifies settings:
 
-rc.settings <- function(ops, ns, args)
+rc.settings <- function(ops, ns, args, ipck, S3, data)
 {
     checkAndChange <- function(what, value)
     {
@@ -61,6 +61,10 @@ rc.settings <- function(ops, ns, args)
     if (!missing(ops))  checkAndChange( "ops",  ops)
     if (!missing(ns))   checkAndChange(  "ns",   ns)
     if (!missing(args)) checkAndChange("args", args)
+    if (!missing(ipck)) checkAndChange("ipck", ipck)
+    if (!missing(S3))   checkAndChange("S3", S3)
+    if (!missing(data)) checkAndChange("data", S3)
+    invisible()
 }
 
 
@@ -379,6 +383,27 @@ breakRE <- "[^\\.\\w]"
 
 
 
+
+
+## for some special functions like library, data, etc, normal
+## completion is rarely meaningful, especially for the first argument.
+## Unfortunately, knowing whether the token being completed is the
+## first arg of such a function involves more work than we would
+## normally want to do.  On the other hand, inFunction() below already
+## does most of this work, so we will add a piece of code (mostly
+## irrelevant to its primary purpose) to indicate this.  The following
+## two functions are just wrappers to access and modify this
+## information.
+
+
+setIsFirstArg <- function(v)
+    .CompletionEnv[["isFirstArg"]] <- v
+
+getIsFirstArg <- function()
+    .CompletionEnv[["isFirstArg"]]
+
+
+
 inFunction <-
     function(line = .CompletionEnv[["linebuffer"]],
              cursor = .CompletionEnv[["start"]])
@@ -415,6 +440,17 @@ inFunction <-
         index <- temp$i[wp[1]]
         prefix <- substr(line, 1, index - 1)
         suffix <- substr(line, index + 1, cursor + 1)
+
+
+
+        ## note in passing whether we are the first argument (no '='
+        ## and no ',' in suffix)
+
+        if ((length(grep("=", suffix, fixed = TRUE)) == 0) &&
+            (length(grep(",", suffix, fixed = TRUE)) == 0))
+            setIsFirstArg(TRUE)
+
+
         if ((length(grep("=", suffix, fixed = TRUE)) > 0) &&
             (length(grep(",", substr(suffix,
                                      tail(gregexpr("=", suffix, fixed = TRUE)[[1]], 1),
@@ -451,11 +487,51 @@ argNames <-
 }
 
 
+
+specialFunctionArgs <- function(fun, text)
+{
+    ## certain special functions have special possible arguments.
+    ## This is primarily applicable to library and require, for which
+    ## rownames(installed.packages()).  This is disabled by default,
+    ## because the first call to installed.packages() can be time
+    ## consuming, e.g. on a network file system.  However, the results
+    ## are cached, so subsequent calls are not that expensive.
+
+    switch(EXPR = fun,
+
+           library = ,
+           require = {
+               if (.CompletionEnv$settings[["ipck"]])
+               {
+                   grep(sprintf("^%s", makeRegexpSafe(text)),
+                        rownames(installed.packages()), value = TRUE)
+               }
+               else character(0)
+           },
+
+           data = {
+               if (.CompletionEnv$settings[["data"]])
+               {
+                   grep(sprintf("^%s", makeRegexpSafe(text)),
+                        data()$results[, "Item"], value = TRUE)
+               }
+               else character(0)
+           },
+
+           ## otherwise,
+           character(0))
+}
+
+
+
 functionArgs <-
-    function(fun, text, S3methods = TRUE, S4methods = FALSE,
+    function(fun, text,
+             S3methods = .CompletionEnv$settings[["S3"]],
+             S4methods = FALSE,
              add.args = rc.getOption("funarg.suffix"))
 {
     if (length(fun) < 1 || any(fun == "")) return(character(0))
+    specialComps <- specialFunctionArgs(fun, text)
     if (S3methods && exists(fun, mode = "function"))
         fun <-
             c(fun,
@@ -469,8 +545,8 @@ functionArgs <-
         grep(sprintf("^%s", makeRegexpSafe(text)),
              allArgs, value = TRUE)
     if (length(ans) > 0 && !is.null(add.args))
-        sprintf("%s%s", ans, add.args)
-    else ans
+        ans <- sprintf("%s%s", ans, add.args)
+    c(specialComps, ans)
 }
 
 
@@ -501,7 +577,7 @@ functionArgs <-
 ## likely to be used))
 
 
-## decide whether to 
+## decide whether to fall back on filename completion
 
 fileCompletionPreferred <- function(text)
 {
@@ -510,7 +586,7 @@ fileCompletionPreferred <- function(text)
 }
 
 
-## completeToken() is the primary interface, and does the actual
+## .completeToken() is the primary interface, and does the actual
 ## completion when called from C code.
 
 
@@ -524,6 +600,7 @@ fileCompletionPreferred <- function(text)
     else
     {
         .Call("RCSuppressFileCompletion")
+        setIsFirstArg(FALSE) # might be changed by inFunction() call
         ## make a guess at what function we are inside
         guessedFunction <-
             if (.CompletionEnv$settings[["args"]])
@@ -537,6 +614,15 @@ fileCompletionPreferred <- function(text)
         ## if nothing matches
 
         fargComps <- functionArgs(guessedFunction, text)
+
+        if (getIsFirstArg() &&
+            guessedFunction %in%
+            c("library", "require", "data"))
+        {
+            ## don't try anything else
+            .CompletionEnv[["comps"]] <- fargComps
+            return()
+        }
 
         ## Is there a "/" in there?  If so, work on the part after
         ## that and append to prefix before returning.  See note in
@@ -560,11 +646,14 @@ fileCompletionPreferred <- function(text)
                 ## Usually yes, but when inside certain special
                 ## functions
 
-                appendParen <-
+                appendFunctionSuffix <-
                     !any(guessedFunction %in%
-                         c("help", "args", "formals", "example", "environment"))
 
-                normalCompletions(text, check.mode = appendParen)
+                         c("help", "args", "formals", "example",
+                           "environment", "page", "apply", "sapply",
+                           "lapply", "tapply", "mapply"))
+
+                normalCompletions(text, check.mode = appendFunctionSuffix)
             }
         if (haveSlash && length(comps) > 0)
         {

@@ -19,7 +19,7 @@
   
 \usage{
 
-rc.settings(ops, ns, args)
+rc.settings(ops, ns, args, ipck, S3, data)
 rc.status()
 
 rc.getOption(name)
@@ -28,20 +28,42 @@ rc.options(\dots)
 }
 
 \arguments{
-  \item{ops, ns, args}{
+  \item{ops, ns, args, ipck, S3, data}{
+
     logical, turning some optional completion features on and off.
-    \code{ops} activates completion after the \code{$} and \code{@}
-    operators, \code{ns} controls namespace related completions, and
-    \code{args} enables completion of function arguments.  All settings
-    are turned on by default.  Turn these off if your CPU cycles are
-    valuable; you will still retain basic completion on names of objects
-    in the search list.  See note below for additional details.
+
+    \describe{
+      \item{\code{ops}:}{activates completion after the \code{$} and
+	\code{@} operators}
+
+      \item{\code{ns}:}{controls namespace related completions}
+
+      \item{\code{args}:}{enables completion of function arguments}
+
+      \item{\code{S3}:}{ when \code{args=TRUE}, activates completion on
+	arguments of all S3 methods (otherwise just the generic, which
+	usually has very few arguments) }
+
+      \item{\code{ipck}:}{ enables completion of installed package names
+	inside \code{\link{library}} and \code{\link{require}} }
+
+      \item{\code{data}:}{ enables completion of data sets (including
+	those already visible) inside \code{\link{data}} }
+
+    }
+
+    All settings are turned on by default except \code{ipck}.  Turn
+    these off if your CPU cycles are valuable; you will still retain
+    basic completion on names of objects in the search list.  See
+    below for additional details.
   }
   \item{name, \dots}{ user-settable options.  Currently valid names are
-    \code{function.suffix} (default \code{"("}),
-    \code{funarg.suffix} (default \code{" = "}) and
-    \code{package.suffix} (default \code{"::"}).  See
-    \code{\link{options}} for detailed usage description
+    \describe{
+      \item{\code{function.suffix}:}{ default \code{"("} }
+      \item{\code{funarg.suffix}:}{ default \code{" = "} }
+      \item{\code{package.suffix}}{ default \code{"::"} }
+    }
+    See \code{\link{options}} for detailed usage description
   }
 }
 
@@ -113,7 +135,8 @@ rc.options(\dots)
       this behaviour to be more useful than the only other practical
       alternative, which is to list arguments of the generic only.
 
-      Only S3 methods are currently supported in this fashion.
+      Only S3 methods are currently supported in this fashion, and that
+      can be turned off using the \code{S3} setting.
 
       Since arguments can be unnamed in \R function calls, other types
       of completion are also appropriate whenever argument completion
@@ -130,6 +153,24 @@ rc.options(\dots)
       Note that no attempt is made to remove arguments already supplied,
       as that would incur a further speed penalty.
     }
+
+    \item{\bold{Special functions}:}{
+      For a few special functions (\code{\link{library}},
+      \code{\link{data}}, etc), the first argument is treated specially,
+      in the sense that normal completion is suppressed, and some
+      function specific completions are enabled if so requested by the
+      settings.  Note that the \code{ipck} setting, which controls
+      whether \code{\link{library}} and \code{\link{require}} will
+      complete on \emph{installed packages}, is disabled by default
+      because the first call to \code{\link{installed.packages}} is
+      potentially time consuming (e.g. when packages are installed on a
+      remote network file server).  Note, however, that the results of a
+      call to \code{\link{installed.packages}} is cached, so subsequent
+      calls are usually fast, so turning this option on is not
+      particularly onerous even in such situations.
+
+    }
+
   }
 
   Needless to say, the details above describe intended behaviour;
@@ -201,14 +242,6 @@ rc.options(\dots)
   functions is large.  This can be the case for generics with a large
   number of methods, like \code{print}.  This feature can be turned off
   by setting \code{args = FALSE}.
-}
-
-\references{
-  GNU Readline manual,
-  \url{http://cnswww.cns.cwru.edu/php/chet/readline/readline.html}
-
-  GNU Bash manual,
-  \url{http://www.gnu.org/software/bash/manual/bashref.html}
 }
 
 \author{ Deepayan Sarkar, \email{deepayan.sarkar@r-project.org} }
