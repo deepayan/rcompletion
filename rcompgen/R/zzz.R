@@ -4,7 +4,8 @@
 .CompletionEnv <- new.env()
 
 assign("settings",
-       list(ops = TRUE, ns = TRUE, args = TRUE),
+       list(ops = TRUE, ns = TRUE, args = TRUE,
+            ipck = FALSE, S3 = TRUE, data = TRUE),
        env = .CompletionEnv)
 
 

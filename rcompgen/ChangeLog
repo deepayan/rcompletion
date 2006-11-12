@@ -1,0 +1,14 @@
+
+2006-11-11:
+
+	added support for special completions inside library(), require()
+	and data(), bumped version to 0.1-2
+
+2006-11-10: 
+
+	split rcompletion 0.0-12 into rcompletion_0.1-1 (readline binding)
+	and rcompgen_0.1-1 (code to generate completions, possibly useful
+	in contexts other than readline).  It is anticipated that further
+	development will be restricted to rcompgen.
+
+
