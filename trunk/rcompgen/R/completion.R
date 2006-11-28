@@ -673,15 +673,15 @@ fileCompletionPreferred <- function(text)
             else
             {
                 ## should we append a left-paren for functions?
-                ## Usually yes, but when inside certain special
+                ## Usually yes, but not when inside certain special
                 ## functions
 
                 appendFunctionSuffix <-
                     !any(guessedFunction %in%
 
-                         c("help", "args", "formals", "example",
+                         c("help", "args", "formals", "example", "do.call",
                            "environment", "page", "apply", "sapply",
-                           "lapply", "tapply", "mapply"))
+                           "lapply", "tapply", "mapply", "methods"))
 
                 normalCompletions(text, check.mode = appendFunctionSuffix)
             }
