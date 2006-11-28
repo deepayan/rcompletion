@@ -18,10 +18,11 @@
   package only provides a binding to the GNU Readline library, and uses
   the \code{rcompgen} package to generate potential completions.  That
   package exports a few functions (notably
-  \code{\link[rcompgen]{rc.settings}}), providing a simple control and
-  query mechanism, that are also available when the \code{rcompletion}
-  package is attached.  The help page for those functions should be
-  consulted for details (some of which this page refers to in passing).
+  \code{\link[rcompgen:rcompgen]{rc.settings}}), providing a simple
+  control and query mechanism, that are also available when the
+  \code{rcompletion} package is attached.  The help page for those
+  functions should be consulted for details (some of which this page
+  refers to in passing).
 
   There are several types of completion, some of which can be disabled
   using \code{rc.settings}.  The most basic level, which can not be
@@ -53,8 +54,9 @@
 
     \item{\bold{Completion of function arguments}:}{
       When the \code{args} setting is turned on, completion on function
-      arguments is attempted whenever deemed appropriate.  The list of
-      possible argument completions that is generated can be misleading.
+      arguments is attempted whenever deemed appropriate.  The algorithm
+      used is imperfect for generic functions, but hopefully still
+      useful.
     }
   }
 }
@@ -72,7 +74,7 @@
 }
 
 \seealso{
-  \code{\link[rcompgen]{rc.settings}} for further details and utilities
+  \code{\link[rcompgen]{rcompgen}} for further details and utilities
   that allow customization.
 }
 
@@ -85,6 +87,33 @@
 }
 
 \author{ Deepayan Sarkar, \email{deepayan.sarkar@r-project.org} }
+
+\examples{
+
+\dontrun{
+
+## sample ~/.Rprofile file to load rcompletion at startup
+
+
+local({
+
+    if (interactive())
+    {
+        library(rcompgen)
+        library(rcompletion)
+
+        ## recognizes installed packages
+        rc.settings(ipck = TRUE) 
+
+        ## creates cache, so that subsequent calls are faster
+        invisible(utils::installed.packages()) 
+    }
+
+})
+
+}
+
+}
 
 \keyword{IO}
 \keyword{utilities}
