@@ -49,7 +49,7 @@
 
 ## modifies settings:
 
-rc.settings <- function(ops, ns, args, ipck, S3, data, help)
+rc.settings <- function(ops, ns, args, func, ipck, S3, data, help)
 {
     checkAndChange <- function(what, value)
     {
@@ -61,6 +61,7 @@ rc.settings <- function(ops, ns, args, ipck, S3, data, help)
     if (!missing(ops))  checkAndChange( "ops",  ops)
     if (!missing(ns))   checkAndChange(  "ns",   ns)
     if (!missing(args)) checkAndChange("args", args)
+    if (!missing(func)) checkAndChange("func", args)
     if (!missing(ipck)) checkAndChange("ipck", ipck)
     if (!missing(S3))   checkAndChange("S3", S3)
     if (!missing(data)) checkAndChange("data", S3)
@@ -125,7 +126,10 @@ rc.status <- function()
 .assignLinebuffer    <- function(line)  assign("linebuffer", line,  envir = .CompletionEnv)
 .assignStart         <- function(start) assign("start",      start, envir = .CompletionEnv)
 .assignEnd           <- function(end)   assign("end",        end,   envir = .CompletionEnv)
+.setFileComp         <- function(state) assign("fileName",   state, envir = .CompletionEnv)
+
 .retrieveCompletions <- function()         get("comps",             envir = .CompletionEnv)
+.getFileComp         <- function()         get("fileName",          envir = .CompletionEnv)
 
 
 
@@ -382,7 +386,7 @@ normalCompletions <-
     else
     {
         comps <- apropos(sprintf("^%s", makeRegexpSafe(text)))
-        if (check.mode && !is.null(add.fun))
+        if (.CompletionEnv$settings[["func"]] && check.mode && !is.null(add.fun))
         {
             which.function <- sapply(comps, function(s) exists(s, mode = "function"))
             if (any(which.function))
@@ -625,11 +629,26 @@ fileCompletionPreferred <- function(text)
     text <- .CompletionEnv[["token"]]
     if (fileCompletionPreferred(text))
     {
+
+        ## If we're in here, that means we think standard filename
+        ## completion is more appropriate (by design, this is supposed
+        ## to happen when we're inside quotes, which is not exactly
+        ## equivalent, but there's not much else we can do anyway in
+        ## that case).  We make no attempt to do filename completion
+        ## because other people have written better code to do that,
+        ## and so we set our completion list to be empty.  Third party
+        ## software using this code can interrogate
+        ## rc.status("fileName") to determine if this is the situation
+        ## and act accordingly.  It's probably even OK to fill
+        ## .CompletionEnv$comps with something suitable.
+
         .CompletionEnv[["comps"]] <- character(0)
+        .setFileComp(TRUE)
     }
     else
     {
-        .Call("RCSuppressFileCompletion")
+        .setFileComp(FALSE)
+        ## .Call("RCSuppressFileCompletion")
         setIsFirstArg(FALSE) # might be changed by inFunction() call
         ## make a guess at what function we are inside
         guessedFunction <-
@@ -674,14 +693,16 @@ fileCompletionPreferred <- function(text)
             {
                 ## should we append a left-paren for functions?
                 ## Usually yes, but not when inside certain special
-                ## functions
+                ## functions which often take other functions as
+                ## arguments
 
                 appendFunctionSuffix <-
                     !any(guessedFunction %in%
 
-                         c("help", "args", "formals", "example", "do.call",
-                           "environment", "page", "apply", "sapply",
-                           "lapply", "tapply", "mapply", "methods"))
+                         c("help", "args", "formals", "example",
+                           "do.call", "environment", "page", "apply",
+                           "sapply", "lapply", "tapply", "mapply",
+                           "methods", "fix", "edit"))
 
                 normalCompletions(text, check.mode = appendFunctionSuffix)
             }
