@@ -72,7 +72,16 @@
   can use the application name \code{"RCustomCompletion"} for settings
   affecting this package.
 
+  Warning: No attention is paid to locale settings.  This is for the
+  most part not a problem, but it does mean that the computed start and
+  end positions of the token in the line buffer may be wrong when
+  multibyte characters are used, which may in turn lead to various kinds
+  of misbehaviour.
+
 }
+
+
+
 
 \seealso{
   \code{\link[rcompgen]{rcompgen}} for further details and utilities

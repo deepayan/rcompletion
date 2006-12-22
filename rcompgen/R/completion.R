@@ -611,12 +611,20 @@ functionArgs <-
 ## likely to be used))
 
 
-## decide whether to fall back on filename completion
+## decide whether to fall back on filename completion.  Yes if the
+## number of quotes between the cursor and the beginning of the line
+## is an odd number.
 
-fileCompletionPreferred <- function(text)
+fileCompletionPreferred <- function()
 {
-    ((st <- .CompletionEnv[["start"]]) > 0 &&
-     any(substr(.CompletionEnv[["linebuffer"]], st, st) == c("'", '"')))
+    ((st <- .CompletionEnv[["start"]]) > 0 && {
+        
+        linebuffer <- .CompletionEnv[["linebuffer"]]
+        lbss <- head(unlist(strsplit(linebuffer, "")), .CompletionEnv[["end"]])
+        ((sum(lbss == "'") %% 2 == 1) ||
+         (sum(lbss == '"') %% 2 == 1))
+
+    })
 }
 
 
@@ -627,7 +635,7 @@ fileCompletionPreferred <- function(text)
 .completeToken <- function()
 {
     text <- .CompletionEnv[["token"]]
-    if (fileCompletionPreferred(text))
+    if (fileCompletionPreferred())
     {
 
         ## If we're in here, that means we think standard filename
@@ -648,7 +656,6 @@ fileCompletionPreferred <- function(text)
     else
     {
         .setFileComp(FALSE)
-        ## .Call("RCSuppressFileCompletion")
         setIsFirstArg(FALSE) # might be changed by inFunction() call
         ## make a guess at what function we are inside
         guessedFunction <-
