@@ -1,6 +1,7 @@
 \name{rcompletion}
+\alias{rcompletion}
 \alias{rcompletion-package}
-\title{Completion for \R using the GNU Readline library}
+\title{Completion for R using the GNU Readline library}
 
 \description{
   This package provides pseudo-intelligent TAB completion for a readline
