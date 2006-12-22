@@ -3,7 +3,7 @@
 #define RL_COMPLETION_H
 
 SEXP RCompletionInit();
-SEXP RCSuppressFileCompletion();
+/* SEXP RCSuppressFileCompletion(); */
 
 SEXP 
     RComp_assignBufferSym,
@@ -11,6 +11,7 @@ SEXP
     RComp_assignEndSym,
     RComp_assignTokenSym,
     RComp_completeTokenSym,
+    RComp_getFileCompSym,
     RComp_retrieveCompsSym;
 
 #endif

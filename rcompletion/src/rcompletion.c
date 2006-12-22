@@ -49,12 +49,11 @@ SEXP RCompletionInit()
     return R_NilValue;
 }
 
-
-SEXP RCSuppressFileCompletion()
-{
-    rl_attempted_completion_over = 1;
-    return R_NilValue;
-}
+/* SEXP RCSuppressFileCompletion() */
+/* { */
+/*     rl_attempted_completion_over = 1; */
+/*     return R_NilValue; */
+/* } */
 
 
 /* 
@@ -159,6 +158,7 @@ R_custom_completion(const char *text,
 {
     char **matches = (char **)NULL;
     SEXP 
+	infile,
 	rho            = PROTECT(R_FindNamespace(mkString("rcompgen"))),
 	linebufferCall = PROTECT(lang2(RComp_assignBufferSym,  mkString(rl_line_buffer))), 
 	startCall      = PROTECT(lang2(RComp_assignStartSym,   ScalarInteger(start))),
@@ -167,9 +167,18 @@ R_custom_completion(const char *text,
     eval(startCall, rho);
     eval(endCall, rho);
     UNPROTECT(4);
+
     matches = rl_completion_matches(text, R_completion_generator);
+
+    infile = PROTECT(eval(lang1(RComp_getFileCompSym), rho));
+    if (!asLogical(infile)) rl_attempted_completion_over = 1;
+    UNPROTECT(1);
+
     return (matches);
 }
+
+
+
 
 
 /* R_completion_generator does the actual work (it is called from
