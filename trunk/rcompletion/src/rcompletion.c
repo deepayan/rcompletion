@@ -128,7 +128,13 @@ static void initialize_rlcompletion ()
      be practically impossible, to begin with) */
 
 
-  /* Not sure why the second one is needed */
+  /* 
+     These break line into tokens.  Unfortunately, this also breaks
+     file names, so a path with a - in it will not be completed.
+
+     Not sure why the second one is needed.  Should play around more
+     with this at some point.
+  */
   rl_basic_word_break_characters = " \t\n\\\"'`><=+-*%;,|&{()}[]";
   rl_completer_word_break_characters = " \t\n\\\"'`><=+-*%;,|&{()}";
   return;
