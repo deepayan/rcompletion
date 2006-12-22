@@ -1,10 +1,11 @@
 \name{rcompgen}
 \alias{rcompgen-package}
+\alias{rcompgen}
 \alias{rc.settings}
 \alias{rc.status}
 \alias{rc.getOption}
 \alias{rc.options}
-\title{A completion generator for \R}
+\title{A completion generator for R}
 
 \description{
 
