@@ -1,6 +1,6 @@
 Package: rcompletion
-Version: 0.1-1
-Date: 2006/11/27
+Version: 0.1-2
+Date: 2006/12/22
 Title: TAB Completion for R using Readline
 Author: Deepayan Sarkar <deepayan.sarkar@r-project.org>
 Maintainer: Deepayan Sarkar <deepayan.sarkar@r-project.org>
