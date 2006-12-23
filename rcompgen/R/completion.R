@@ -112,8 +112,8 @@ rc.options <- function(...)
 
 rc.status <- function()
 {
-    str(eapply(.CompletionEnv, function(x) x, all.names = TRUE))
-    invisible()
+    ## eapply(.CompletionEnv, function(x) x, all.names = TRUE)
+    as.list(.CompletionEnv)
 }
 
 
