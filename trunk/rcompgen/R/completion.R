@@ -134,6 +134,30 @@ rc.status <- function()
 
 
 
+## The following function is not required for GNU readline, but can be
+## useful if one needs to break a line into tokens.  It requires
+## linebuffer and end to be already set, and itself sets token and
+## start.  It returns the token.
+
+
+.guessTokenFromLine <-
+    function()
+{
+    linebuffer <- .CompletionEnv[["linebuffer"]]
+    end <- .CompletionEnv[["end"]]
+    start <- suppressWarnings(gregexpr("[^\\.\\w:$@[\\]]+", substr(linebuffer, 1, end), perl = TRUE))[[1]]
+    start <- ## 0-indexed
+        if (all(start < 0)) 0
+        else tail(start + attr(start, "match.length"), 1) - 1 
+    .CompletionEnv[["start"]] <- start
+    .CompletionEnv[["token"]] <- substr(linebuffer, start + 1, end)
+    .CompletionEnv[["token"]]
+}
+
+
+
+
+
 
 ## convert a string to something that escapes special regexp
 ## characters.  Doesn't have to be perfect, especially for characters
@@ -412,9 +436,10 @@ normalCompletions <-
 ## positi[TAB] )" ))))
 
 
+## this defines potential function name boundaries
+
 breakRE <- "[^\\.\\w]"
 ## breakRE <- "[ \t\n \\\" '`><=-%;,&}\\\?\\\+\\\{\\\|\\\(\\\)\\\*]"
-
 
 
 
