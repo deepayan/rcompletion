@@ -96,17 +96,12 @@
   \url{http://www.gnu.org/software/bash/manual/bashref.html}
 }
 
-\author{ Deepayan Sarkar, \email{deepayan.sarkar@r-project.org} }
-
 \examples{
 
 \dontrun{
-
 ## sample ~/.Rprofile file to load rcompletion at startup
 
-
 local({
-
     if (interactive())
     {
         library(rcompgen)
@@ -118,12 +113,14 @@ local({
         ## creates cache, so that subsequent calls are faster
         invisible(utils::installed.packages()) 
     }
-
 })
 
 }
 
 }
+
+
+\author{ Deepayan Sarkar, \email{deepayan.sarkar@r-project.org} }
 
 \keyword{IO}
 \keyword{utilities}

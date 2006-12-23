@@ -209,6 +209,8 @@ rc.options(\dots)
     .completeToken()
     .retrieveCompletions()
     .getFileComp()
+
+    .guessTokenFromLine()
   }
 
   The first four functions set up a completion attempt by specifying the
@@ -226,6 +228,11 @@ rc.options(\dots)
   \code{TRUE}), and alternative completions generated as deemed useful.
   In most cases, filename completion is a reasonable fallback.
 
+  The \code{.guessTokenFromLine} function is provided for use with
+  backends that do not already break a line into tokens.  It requires
+  the linebuffer and endpoint (cursor position) to be already set, and
+  itself sets the token and the start position.  It returns the token as
+  a character string.
 }
 
 
