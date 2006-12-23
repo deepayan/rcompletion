@@ -1,5 +1,5 @@
 
-;;; A proof-of-concept alternative user completion command (modified
+;;; A proof-of-concept alternative user completion command (adapted
 ;;; from ess-complete-object-name) for use with ESS, making use of the
 ;;; rcompgen package rather than ESS's built-in completion mechanism.
 ;;; Including this in your .emacs file should be sufficient (see usage
