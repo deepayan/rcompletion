@@ -145,7 +145,9 @@ rc.status <- function()
 {
     linebuffer <- .CompletionEnv[["linebuffer"]]
     end <- .CompletionEnv[["end"]]
-    start <- suppressWarnings(gregexpr("[^\\.\\w:$@[\\]]+", substr(linebuffer, 1, end), perl = TRUE))[[1]]
+    start <- suppressWarnings(gregexpr("[^\\.\\w:?$@[\\]]+", substr(linebuffer, 1, end), perl = TRUE))[[1]]
+    ##                                    ^^^^^^^^^^^^^^
+    ##                             things that should not cause breaks
     start <- ## 0-indexed
         if (all(start < 0)) 0
         else tail(start + attr(start, "match.length"), 1) - 1 
