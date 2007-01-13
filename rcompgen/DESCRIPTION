@@ -1,6 +1,6 @@
 Package: rcompgen
-Version: 0.1-4
-Date: 2007/01/08
+Version: 0.1-5
+Date: 2007/01/12
 Title: Completion generator for R
 Author: Deepayan Sarkar <deepayan.sarkar@r-project.org>
 Maintainer: Deepayan Sarkar <deepayan.sarkar@r-project.org>
