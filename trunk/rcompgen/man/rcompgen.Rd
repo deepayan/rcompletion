@@ -20,7 +20,7 @@
   
 \usage{
 
-rc.settings(ops, ns, args, func, ipck, S3, data, help)
+rc.settings(ops, ns, args, func, ipck, S3, data, help, argdb)
 rc.status()
 
 rc.getOption(name)
@@ -29,7 +29,7 @@ rc.options(\dots)
 }
 
 \arguments{
-  \item{ops, ns, args, func, ipck, S3, data, help}{
+  \item{ops, ns, args, func, ipck, S3, data, help, argdb}{
 
     logical, turning some optional completion features on and off.
 
@@ -62,6 +62,23 @@ rc.options(\dots)
 
       \item{\code{help}:}{ enables completion of help requests starting
 	with a question mark, by looking inside help index files }
+
+      \item{\code{argdb}:}{ when \code{args=TRUE}, completion is
+	attempted on function arguments.  Generally, the list of
+	valid arguments is determined by dynamic calls to
+	\code{\link{args}}.  While this gives results that are
+	technically correct, the use of the \code{\dots} argument often
+	hides some useful arguments.  To give more flexibility in this
+	regard, \code{rcompgen} internally retains an optional table of
+	valid arguments names for specific functions.  Setting
+	\code{argdb=TRUE} enables preferential lookup in this internal
+	data base for functions with an entry in it.  Of course, this is
+	useful only when the data base contains information about the
+	function of interest.  Some functions are included in the
+	package (the maintainer is happy to add more upon request), and
+	more can be added by the user through the unexported function
+	\code{.addFunctionInfo} (see below).
+      }
 
     }
 
@@ -248,6 +265,8 @@ rc.options(\dots)
     .getFileComp()
 
     .guessTokenFromLine()
+
+    .addFunctionInfo(...)
   }
 
   The first four functions set up a completion attempt by specifying the
@@ -270,6 +289,13 @@ rc.options(\dots)
   the linebuffer and endpoint (cursor position) to be already set, and
   itself sets the token and the start position.  It returns the token as
   a character string.
+
+  The function \code{.addFunctionInfo} can be used to add information
+  about the permitted argument names for specific functions.  Multiple
+  named arguments are allowed in calls to it, where the tags are names
+  of functions and values are character vectors representing valid
+  arguments.  When the \code{argdb} setting is \code{TRUE}, these are
+  used as a source of valid argument names for the relevant functions.
 }
 
 \note{
