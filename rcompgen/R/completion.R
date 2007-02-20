@@ -29,7 +29,7 @@
 ### Status: I'm mostly happy with things.  The only obvious
 ### improvement I can think of is figuring out when we are in
 ### continuation mode (R prompt == "+") and make use of previous lines
-### in that case.  I haven't found a way to figure that out.
+### in that case.  I haven't found a way to do that.
 
 
 
@@ -49,7 +49,7 @@
 
 ## modifies settings:
 
-rc.settings <- function(ops, ns, args, func, ipck, S3, data, help)
+rc.settings <- function(ops, ns, args, func, ipck, S3, data, help, argdb)
 {
     checkAndChange <- function(what, value)
     {
@@ -58,14 +58,15 @@ rc.settings <- function(ops, ns, args, func, ipck, S3, data, help)
             !is.na(value))
             .CompletionEnv$settings[[what]] <- value
     }
-    if (!missing(ops))  checkAndChange( "ops",  ops)
-    if (!missing(ns))   checkAndChange(  "ns",   ns)
-    if (!missing(args)) checkAndChange("args", args)
-    if (!missing(func)) checkAndChange("func", args)
-    if (!missing(ipck)) checkAndChange("ipck", ipck)
-    if (!missing(S3))   checkAndChange("S3", S3)
-    if (!missing(data)) checkAndChange("data", S3)
-    if (!missing(help)) checkAndChange("help", S3)
+    if (!missing(ops))   checkAndChange( "ops",  ops)
+    if (!missing(ns))    checkAndChange(  "ns",   ns)
+    if (!missing(args))  checkAndChange("args", args)
+    if (!missing(func))  checkAndChange("func", args)
+    if (!missing(ipck))  checkAndChange("ipck", ipck)
+    if (!missing(S3))    checkAndChange("S3", S3)
+    if (!missing(data))  checkAndChange("data", S3)
+    if (!missing(help))  checkAndChange("help", S3)
+    if (!missing(argdb)) checkAndChange("argdb", S3)
     invisible()
 }
 
@@ -536,8 +537,11 @@ inFunction <-
 
 
 argNames <-
-    function(fname)
+    function(fname, use.arg.db = .CompletionEnv$settings[["argdb"]])
 {
+    if (use.arg.db) args <- .FunArgEnv[[fname]]
+    if (!is.null(args)) return(args)
+    ## else
     args <- do.call(argsAnywhere, list(fname))
     if (is.null(args))
         character(0)
