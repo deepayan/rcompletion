@@ -412,7 +412,7 @@ normalCompletions <-
     if (text == "") character() ## too many otherwise
     else
     {
-        comps <- apropos(sprintf("^%s", makeRegexpSafe(text)))
+        comps <- apropos(sprintf("^%s", makeRegexpSafe(text)), ignore.case = FALSE)
         if (.CompletionEnv$settings[["func"]] && check.mode && !is.null(add.fun))
         {
             which.function <- sapply(comps, function(s) exists(s, mode = "function"))
