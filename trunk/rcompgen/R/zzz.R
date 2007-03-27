@@ -3,6 +3,10 @@
 
 .CompletionEnv <- new.env()
 
+## needed to save some overhead in .win32consoleCompletion
+assign("linebuffer", "", env = .CompletionEnv)
+assign("end", 1, env = .CompletionEnv)
+
 assign("settings",
        list(ops = TRUE, ns = TRUE,
             args = TRUE, func = FALSE,
@@ -22,4 +26,12 @@ assign("options",
 .initialize.argdb() ## see argdb.R
 
 
+## .onLoad <- function(libname, pkgname)
+## {
+##     if (.Platform$OS.type == "windows")
+##     {
+##         message("Initializing completion utilities for Windows Rgui")
+##         .setupStupidFileBasedCommunicationLayer()
+##     }
+## }
 
