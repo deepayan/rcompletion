@@ -1,6 +1,6 @@
 
 import(utils)
-importFrom(methods, slotNames)
+## importFrom(methods, slotNames)
 
 
 export(rc.status,           # helps debug

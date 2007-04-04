@@ -316,7 +316,7 @@ specialCompletions <- function(text, spl)
                        else
                        {
                            grep(sprintf("^%s", makeRegexpSafe(suffix)),
-                                slotNames(object), value = TRUE)
+                                methods::slotNames(object), value = TRUE)
                        }
                    } else suffix
                },
