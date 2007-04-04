@@ -1,5 +1,12 @@
 
+2007-04-04:
 
+	Subversion hosting moved to
+	https://svn.r-project.org/R-packages/trunk/rcompgen.  rcompgen is
+	made a recommended package, with the intent of using it as a
+	backend in official R front-ends to provide completion.
+	
+	
 2007-03-28:
 
 	Added some support code to help with completion in Rgui (Windows).

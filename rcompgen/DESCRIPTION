@@ -1,5 +1,6 @@
 Package: rcompgen
 Version: 0.1-8
+Priority: recommended
 Date: 2007/04/04
 Title: Completion generator for R
 Author: Deepayan Sarkar <deepayan.sarkar@r-project.org>
@@ -9,5 +10,4 @@ Description: Generates potential completions for a given command
 Depends: R (>= 2.5.0)
 Imports: utils, methods
 LazyLoad: yes
-LazyData: no
 License: GPL version 2 or later
