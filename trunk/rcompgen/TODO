@@ -1,4 +1,8 @@
 
+ o completion after $ works on names().  This is not OK for non-list named 
+   objects.  On the other hand, we want to be able to $ completion on other 
+   objects that have a $method.  Not sure what the best approach would be.
+
  o make filename completion work better.  Do it in R?
 
  o what are the .__* things in S4 namespaces?  Need to filter these out.
