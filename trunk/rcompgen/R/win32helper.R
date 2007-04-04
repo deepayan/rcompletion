@@ -2,6 +2,11 @@
 ## support functions that attempt to provide tools useful specifically
 ## for the Windows Rgui.
 
+
+## Note: even though these are unexported functions, changes in the
+## API should be noted in man/rcompgen.Rd
+
+
 .win32consoleCompletion <- function(linebuffer, cursorPosition)
 {
     isRepeat <- ## is TAB being pressed for the first time with this combination?

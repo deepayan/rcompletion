@@ -265,6 +265,7 @@ rc.options(\dots)
     .getFileComp()
 
     .guessTokenFromLine()
+    .win32consoleCompletion(linebuffer, cursorPosition)
 
     .addFunctionInfo(...)
   }
@@ -288,7 +289,20 @@ rc.options(\dots)
   backends that do not already break a line into tokens.  It requires
   the linebuffer and endpoint (cursor position) to be already set, and
   itself sets the token and the start position.  It returns the token as
-  a character string.
+  a character string.  (This is used by the ESS completion hook example
+  given in the \code{examples/altesscomp.el} file.)
+
+  The \code{.win32consoleCompletion} is similar in spirit, but is more
+  geared towards the Windows GUI.  It requires the linebuffer and cursor
+  position as arguments, and returns a list with two components,
+  \code{addition} and \code{possible}.  If there is an unambiguous
+  extension at the current position, \code{addition} contains the
+  additional text that should be inserted at the cursor.  If there is
+  more than one possibility, these are available as a character vector
+  in \code{possible}.  These character strings are formatted lines
+  (created using the current \code{width} option), not individual
+  completions.  As the front-end interfaces evolve, the details of these
+  functions are likely to change as well.
 
   The function \code{.addFunctionInfo} can be used to add information
   about the permitted argument names for specific functions.  Multiple
