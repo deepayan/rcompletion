@@ -1,4 +1,18 @@
 ------------------------------------------------------------------------
+r22 | deepayan.sarkar | 2007-04-03 19:18:13 -0700 (Tue, 03 Apr 2007) | 1 line
+Changed paths:
+   M /trunk/rcompgen/ChangeLog
+   M /trunk/rcompgen/DESCRIPTION
+   M /trunk/rcompgen/NAMESPACE
+   M /trunk/rcompgen/R/argdb.R
+   M /trunk/rcompgen/R/completion.R
+   M /trunk/rcompgen/R/win32helper.R
+   M /trunk/rcompgen/R/zzz.R
+   A /trunk/rcompgen/SvnLog
+   A /trunk/rcompgen/update.sh
+
+not importing methods::slotNames until it's required, also added an SvnLog file
+------------------------------------------------------------------------
 r21 | deepayan.sarkar | 2007-03-28 12:08:21 -0700 (Wed, 28 Mar 2007) | 1 line
 Changed paths:
    M /trunk/rcompgen/R/argdb.R
