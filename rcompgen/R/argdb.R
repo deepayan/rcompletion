@@ -77,7 +77,6 @@
           "xaxp", "xaxs", "xaxt", "xpd", "yaxp", "yaxs", "yaxt")
 
     options <-
-
         c("add.smooth", "browser", "check.bounds", "continue",
           "contrasts", "defaultPackages", "device", "digits",
           "dvipscmd", "echo", "editor", "encoding", "example.ask",

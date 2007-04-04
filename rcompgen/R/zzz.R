@@ -25,13 +25,3 @@ assign("options",
 
 .initialize.argdb() ## see argdb.R
 
-
-## .onLoad <- function(libname, pkgname)
-## {
-##     if (.Platform$OS.type == "windows")
-##     {
-##         message("Initializing completion utilities for Windows Rgui")
-##         .setupStupidFileBasedCommunicationLayer()
-##     }
-## }
-
