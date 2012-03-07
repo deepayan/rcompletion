@@ -266,32 +266,27 @@ _R()
 
 		Rdconv)
 
-		    furtherOpts="$versOpts $helpOpts -d --debug -t \
-		    --type -o --output --os --OS"
+		    furtherOpts="$versOpts $helpOpts -t --type \
+		    --encoding --package -o --output --os --OS"
 
 		    fileNames=$( compgen -f -X '!*.@(Rd)' -- "$cur" )
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
 
-		Rd2dvi)
+		Rd2pdf)
 
-		    furtherOpts="$versOpts $helpOpts --batch --debug \
-		    --no-clean --no-preview --os --OS -o --output \
-		    --pdf --title -V --verbose"
+		    furtherOpts="$versOpts $helpOpts --batch            \
+		    --no-clean --no-preview --encoding --outputEncoding \
+                    --os --OS -o --output --force --title               \
+		    --no-index --no-description --internals"
 
 		    fileNames=$( compgen -f -X '!*.@(Rd)' -- "$cur" )
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
 
 		Rd2txt)
-		    furtherOpts="$versOpts $helpOpts"
+		    furtherOpts="$versOpts $helpOpts -t --type --encoding --package -o --output --os --OS"
 		    fileNames=$( compgen -f -X '!*.@(Rd)' -- "$cur" )
-		    dirNames=$( compgen -d -- "$cur" )
-		    ;;
-
-		Sd2Rd)
-		    furtherOpts="$versOpts $helpOpts -n -x"
-		    fileNames=$( compgen -f -X '!*.@(Sd)' -- "$cur" )
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
 
@@ -307,7 +302,7 @@ _R()
 
 		    else
 
-			furtherOpts=""
+			furtherOpts="$versOpts $helpOpts --driver --encoding --options --pdf"
 			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -326,7 +321,7 @@ _R()
 
 		    else
 
-			furtherOpts=""
+			furtherOpts="$versOpts $helpOpts --encoding --options"
 			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -341,13 +336,28 @@ _R()
 
 		    else
 
-			furtherOpts="$versOpts $helpOpts --ldflags  \
---cppflags BLAS_LIBS CC CFLAGS CPICFLAGS CPP CPPFLAGS CXX CXXCPP    \
-CXXFLAGS CXXPICFLAGS DYLIB_LD DYLIB_LDFLAGS F2C F77 FFLAGS FLIBS    \
-FPICFLAGS LAPACK_LIBS LDFLAGS MAKE SHLIB_CFLAGS SHLIB_CXXLD         \
-SHLIB_CXXLDFLAGS SHLIB_FFLAGS SHLIB_LD SHLIB_LDFLAGS TCLTK_CPPFLAGS \
-TCLTK_LIBS"
+			furtherOpts="$versOpts $helpOpts --ldflags  --cppflags  \
+BLAS_LIBS CC CFLAGS CPICFLAGS CPP CPPFLAGS CXX CXXCPP CXXFLAGS			\
+CXXPICFLAGS DYLIB_EXT DYLIB_LD DYLIB_LDFLAGS F77 FFLAGS FLIBS			\
+FPICFLAGS FC FCFLAGS FCPICFLAGS JAR JAVA JAVAC JAVAH JAVA_HOME			\
+JAVA_LIBS JAVA_CPPFLAGS LAPACK_LIBS LIBnn LDFLAGS OBJC OBJCFLAGS MAKE		\
+SAFE_FFLAGS SHLIB_CFLAGS SHLIB_CXXLD SHLIB_CXXLDFLAGS SHLIB_EXT			\
+SHLIB_FFLAGS SHLIB_LD SHLIB_LDFLAGS SHLIB_FCLD, SHLIB_FCLDFLAGS			\
+TCLTK_CPPFLAGS TCLTK_LIBS"
+
 		    fi
+		    ;;
+
+
+		javareconf)
+		    furtherOpts="$versOpts $helpOpts -n --dry-run -e"
+		    ;;
+
+
+		rtags)
+		    furtherOpts="$versOpts $helpOpts -o --output --no-c --no-R \
+                                --no-Rd -a --append -V --verbose"
+		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
 
 	    esac
@@ -373,7 +383,7 @@ TCLTK_LIBS"
 	case $lastToken in
 
 	    -g|--gui)
-		furtherOpts="X11 gnome Tk none"
+		furtherOpts="X11 Tk"
 		;;
 	    -d|--debugger) ## allow commands
 		furtherOpts=$( compgen -c -- "$cur" )
@@ -429,10 +439,9 @@ TCLTK_LIBS"
 		#echo $allOpts
 
 		;;
-	    --save|-s|--no-save)
+	    --save|--no-save)
 		allOpts=${allOpts/ --save / }
 		allOpts=${allOpts/ --no-save / }
-		allOpts=${allOpts/ -s / }
 		;;
 	    --vanilla)
 		allOpts=${allOpts/ --no-save / }
@@ -441,11 +450,10 @@ TCLTK_LIBS"
 		allOpts=${allOpts/ --no-init-file / }
 		allOpts=${allOpts/ --no-environ / }
 		;;
-	    -d)       allOpts=${allOpts/ --debugger / } ;;
+	    -d)               allOpts=${allOpts/ --debugger / } ;;
 	    --debugger)       allOpts=${allOpts/ -d / } ;;
 	    --restore)        allOpts=${allOpts/ --no-restore / } ;;
-	    --no-restore)        allOpts=${allOpts/ --restore / } ;;
-	    --debugger)       allOpts=${allOpts/ -d / } ;;
+	    --no-restore)     allOpts=${allOpts/ --restore / } ;;
 	    -g|--gui)
 		allOpts=${allOpts/ -g / }
 		allOpts=${allOpts/ --gui / }
@@ -457,30 +465,11 @@ TCLTK_LIBS"
 		allOpts=${allOpts/ --no-readline / }
 		;;
 
-	    ## build
-	    --use-zip)
-		allOpts=${allOpts/ --use-zip-data / }
-		allOpts=${allOpts/ --use-zip-help / }
-		;;
-
-
-	    ## INSTALL
-	    --lazy|--no-lazy)
-		allOpts=${allOpts/ --lazy / }
-		allOpts=${allOpts/ --no-lazy / }
-		;;
-
-	    --lazy-data|--no-lazy-data)
-		allOpts=${allOpts/ --lazy-data / }
-		allOpts=${allOpts/ --no-lazy-data / }
-		;;
-
 	esac
 
     done
 
     ## and finally:
-
 
     COMPREPLY=(
 	$( compgen -W "$allOpts $fileNames $dirNames" -- $cur )
