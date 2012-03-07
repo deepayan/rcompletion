@@ -1,4 +1,4 @@
-### Copyright (C) 2005-2006 Deepayan Sarkar <Deepayan.Sarkar@R-project.org>
+### Copyright (C) 2005-2011 Deepayan Sarkar <Deepayan.Sarkar@R-project.org>
 ###
 ### This file provides programmable completion for R under the bash
 ### shell.  It is made available under the terms of the GNU General
@@ -8,14 +8,14 @@
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License, available at 
+### PURPOSE.  See the GNU General Public License, available at
 ### http://www.gnu.org/licenses/gpl.txt, for more details.
 
 
 ### NOTE: This does NOT provide completion for commands within R, only
 ### for R's command-line options.  For example,
 ###
-### R CMD build --f[TAB] 
+### R CMD build --f[TAB]
 ###
 ### will complete to --force and so on. In other words, this is
 ### potentially useful (for the most part) to package developers, not
@@ -23,7 +23,7 @@
 
 ### NEWS: Updated for R 2.4.0 (October 2006)
 
-### BUGS: As it stands, this is far from perfect.  Known bugs include: 
+### BUGS: As it stands, this is far from perfect.  Known bugs include:
 ###
 ### (1) file/directory name completion doesn't work when there is a ~
 ### (1) in the name.  Fortunately, in such situations, one can always
@@ -44,15 +44,15 @@
 ### to learn more about bash completion.  On a modern Debian system,
 ### all the necessary files are already installed by the bash package.
 ### To enable it, just uncomment the following lines in your .bashrc
-### 
+###
 ### # if [ "$PS1" -a -f /etc/bash_completion ]; then
 ### #     . /etc/bash_completion
 ### # fi
-### 
-### or to try it out in your current shell, type 
-### 
+###
+### or to try it out in your current shell, type
+###
 ### . /etc/bash_completion
-### 
+###
 ### Once you are using bash completion, you can enable completion for
 ### R by similarly sourcing this file.  For permanent use, place it in
 ### your $BASH_COMPLETION_DIR (/etc/bash_completion.d in Debian).  If
@@ -79,7 +79,7 @@ _R()
     stdOpts='--save --no-save --no-environ --no-site-file            \
     --no-init-file --restore --no-restore-data --no-restore-history  \
     --no-restore --vanilla --no-readline -q --quiet --silent --slave \
-    --verbose -d -g --args'
+    --interactive --verbose -d -g --args -f -e'
 
     ## these should end with a '=' and not be followed by a space.
     ## Unfortunately, I haven't figured out how to make that work.
@@ -89,16 +89,16 @@ _R()
 
     argOpts='--min-vsize --max-vsize --min-nsize --max-nsize \
     --encoding --max-ppsize --debugger --debugger-args \
-    --gui --arch'
+    --gui --arch --file'
 
     cmds='BATCH COMPILE SHLIB INSTALL REMOVE build check LINK Rprof \
-    Rdconv Rd2dvi Rd2txt Sd2Rd Sweave Stangle config'
+    Rdconv Rd2pdf Rd2txt Stangle Sweave Rdiff config javareconf rtags'
 
 
 
 
     fileNames='' # possible to have files in certain commands (e.g. BATCH)
-    dirNames='' 
+    dirNames=''
 
 
     if [[ $COMP_CWORD -eq 1 ]] ; then
@@ -159,7 +159,7 @@ _R()
 
 		    else
 
-			furtherOpts="$versOpts $helpOpts $stdOpts $argOpts"
+			furtherOpts="$versOpts $helpOpts $stdOpts $argOpts --no-timing"
 			fileNames=$( compgen -f -X '!*.@(R|r|S|s)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -193,7 +193,8 @@ _R()
 
 		    else
 
-			furtherOpts="$versOpts $helpOpts -o --output"
+			furtherOpts="$versOpts $helpOpts -o --output -c --clean \
+ --preclean -n --dry-run"
 			fileNames=$( compgen -f -X '!*.@(a|o)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -210,11 +211,14 @@ _R()
 
 		    else
 
-			furtherOpts="$versOpts $helpOpts --configure-args \
---configure-vars -c --clean -s --save --no-save --lazy --no-lazy \
---lazy-data --no-lazy-data -d --debug -l --library --no-configure \
---no-docs --with-package-versions --use-zip-data --use-zip-help \
---use-zip --fake --no-lock --build"
+			furtherOpts="$versOpts $helpOpts                \
+--configure-args --configure-vars -c --clean --preclean -d --debug -l  	\
+--library --no-configure --no-docs --html --no-html --latex --example	\
+--fake --no-lock --lock --pkglock --build --install-tests --no-R,	\
+--no-libs --no-data --no-help --no-demo --no-exec --no-inst		\
+--no-multiarch --libs-only --data-compress --resave-data		\
+--compact-docs --with-keep.source --without-keep.source --byte-compile	\
+--no-clean-on-error"
 			fileNames=$( compgen -f -X '!*.@(tar.gz|tgz)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -231,18 +235,20 @@ _R()
 
 		build)
 
-		    furtherOpts="$versOpts $helpOpts --force \
-		    --no-vignettes --binary --no-docs --use-zip-data \
-		    --use-zip-help --use-zip"
+		    furtherOpts="$versOpts $helpOpts \
+--force --keep-empty-dirs --no-vignettes --no-manual --resave-data \
+--no-resave-data --compact-vignettes"
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
 
 		check)
 
-		    furtherOpts="$versOpts $helpOpts -l --library -o \
-		    --outdir --no-clean --no-codoc --no-examples \
-		    --no-install --no-tests --no-vignettes --no-latex \
-		    --use-gct --use-valgrind --rcfile"
+		    furtherOpts="$versOpts $helpOpts           \
+-l --library -o --outdir				       \
+--no-clean --no-codoc --no-examples --no-install --no-tests    \
+--no-manual --no-vignettes --no-rebuild-vignettes --use-gct    \
+--use-valgrind --timings --install-args --check-subdirs	       \
+--extra-arch --multiarch --no-multiarch --force-multiarch"
 
 		    fileNames=$( compgen -f -X '!*.@(tar.gz|tgz)' -- "$cur" )
 		    dirNames=$( compgen -d -- "$cur" )
@@ -253,7 +259,7 @@ _R()
 		    ;;
 
 		Rprof)
-		    furtherOpts="$versOpts $helpOpts"
+		    furtherOpts="$versOpts $helpOpts --total --self --min%total --min%self"
 		    fileNames=$( compgen -f -- "$cur" )
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
@@ -330,7 +336,7 @@ _R()
 		config)
 
 		    if [[ $COMP_CWORD -gt 3 ]] ; then
-			
+
 			return 0
 
 		    else
@@ -364,10 +370,10 @@ TCLTK_LIBS"
 
     else
 
-	case $lastToken in 
+	case $lastToken in
 
-	    -g|--gui) 
-		furtherOpts="X11 gnome Tk none" 
+	    -g|--gui)
+		furtherOpts="X11 gnome Tk none"
 		;;
 	    -d|--debugger) ## allow commands
 		furtherOpts=$( compgen -c -- "$cur" )
@@ -379,7 +385,7 @@ TCLTK_LIBS"
 	esac
     fi
 
-    ## need some removal, 
+    ## need some removal,
 
     ## take out options already given
     for (( i=1; i<=$COMP_CWORD-1; ++i )) ; do
@@ -416,57 +422,57 @@ TCLTK_LIBS"
 # 	    ">") ## only filenames allowed
 # 		allOpts="<" ;;
 
-	    -q|--quiet|--silent)       
+	    -q|--quiet|--silent)
 		allOpts=${allOpts/ -q / }
 		allOpts=${allOpts/ --quiet / }
 		allOpts=${allOpts/ --silent / }
 		#echo $allOpts
 
 		;;
-	    --save|-s|--no-save)        
-		allOpts=${allOpts/ --save / } 
-		allOpts=${allOpts/ --no-save / } 
-		allOpts=${allOpts/ -s / } 
+	    --save|-s|--no-save)
+		allOpts=${allOpts/ --save / }
+		allOpts=${allOpts/ --no-save / }
+		allOpts=${allOpts/ -s / }
 		;;
-	    --vanilla)     
-		allOpts=${allOpts/ --no-save / } 
-		allOpts=${allOpts/ --no-restore / } 
-		allOpts=${allOpts/ --no-site-file / } 
-		allOpts=${allOpts/ --no-init-file / } 
-		allOpts=${allOpts/ --no-environ / } 
+	    --vanilla)
+		allOpts=${allOpts/ --no-save / }
+		allOpts=${allOpts/ --no-restore / }
+		allOpts=${allOpts/ --no-site-file / }
+		allOpts=${allOpts/ --no-init-file / }
+		allOpts=${allOpts/ --no-environ / }
 		;;
 	    -d)       allOpts=${allOpts/ --debugger / } ;;
 	    --debugger)       allOpts=${allOpts/ -d / } ;;
 	    --restore)        allOpts=${allOpts/ --no-restore / } ;;
 	    --no-restore)        allOpts=${allOpts/ --restore / } ;;
 	    --debugger)       allOpts=${allOpts/ -d / } ;;
-	    -g|--gui)       
+	    -g|--gui)
 		allOpts=${allOpts/ -g / }
 		allOpts=${allOpts/ --gui / }
 		;;
 
- 	    BATCH)       
+ 	    BATCH)
 		allOpts=${allOpts/ --restore / }
 		allOpts=${allOpts/ --save / }
 		allOpts=${allOpts/ --no-readline / }
 		;;
 
 	    ## build
-	    --use-zip)     
-		allOpts=${allOpts/ --use-zip-data / } 
-		allOpts=${allOpts/ --use-zip-help / } 
+	    --use-zip)
+		allOpts=${allOpts/ --use-zip-data / }
+		allOpts=${allOpts/ --use-zip-help / }
 		;;
 
 
 	    ## INSTALL
-	    --lazy|--no-lazy)        
-		allOpts=${allOpts/ --lazy / } 
-		allOpts=${allOpts/ --no-lazy / } 
+	    --lazy|--no-lazy)
+		allOpts=${allOpts/ --lazy / }
+		allOpts=${allOpts/ --no-lazy / }
 		;;
 
-	    --lazy-data|--no-lazy-data)        
-		allOpts=${allOpts/ --lazy-data / } 
-		allOpts=${allOpts/ --no-lazy-data / } 
+	    --lazy-data|--no-lazy-data)
+		allOpts=${allOpts/ --lazy-data / }
+		allOpts=${allOpts/ --no-lazy-data / }
 		;;
 
 	esac
@@ -487,7 +493,7 @@ TCLTK_LIBS"
 
 complete -F _R -o filenames R
 
-## Add more aliases here, e.g. 
+## Add more aliases here, e.g.
 
 # for e in R-2.4 R-devel R-patched; do complete -F _R -o filenames ${e}; done
 
