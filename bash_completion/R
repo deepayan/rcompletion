@@ -25,15 +25,11 @@
 
 ### BUGS: As it stands, this is far from perfect.  Known bugs include:
 ###
-### (1) file/directory name completion doesn't work when there is a ~
-### (1) in the name.  Fortunately, in such situations, one can always
-### (1) fall back to standard completion by using M-/ instead of TAB
+### (1) Not all mutually exclusive options are properly handled
 ###
-### (2) Not all mutually exclusive options are properly handled
-###
-### (3) Doesn't test for the existence of R before defining the
-### (3) completion function (not strictly a bug, but definitely not a
-### (3) good feature)
+### (2) Doesn't test for the existence of R before defining the
+### (2) completion function (not strictly a bug, but definitely not a
+### (2) good feature)
 
 
 ### INSTALLATION AND USAGE: You need to first install and enable bash
@@ -479,12 +475,11 @@ TCLTK_CPPFLAGS TCLTK_LIBS"
 
 }
 
-
-complete -F _R -o filenames R
+complete -F _R -o default R
 
 ## Add more aliases here, e.g.
 
-# for e in R-2.4 R-devel R-patched; do complete -F _R -o filenames ${e}; done
+# for e in R-devel R-patched; do complete -F _R -o default ${e}; done
 
 
 
