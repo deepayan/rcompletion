@@ -210,11 +210,11 @@ _R()
 			furtherOpts="$versOpts $helpOpts                \
 --configure-args --configure-vars -c --clean --preclean -d --debug -l  	\
 --library --no-configure --no-docs --html --no-html --latex --example	\
---fake --no-lock --lock --pkglock --build --install-tests --no-R,	\
+--fake --no-lock --lock --pkglock --build --install-tests --no-R	\
 --no-libs --no-data --no-help --no-demo --no-exec --no-inst		\
 --no-multiarch --libs-only --data-compress --resave-data		\
 --compact-docs --with-keep.source --without-keep.source --byte-compile	\
---no-clean-on-error"
+--no-clean-on-error --merge-multiarch"
 			fileNames=$( compgen -f -X '!*.@(tar.gz|tgz)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -232,18 +232,18 @@ _R()
 		build)
 
 		    furtherOpts="$versOpts $helpOpts \
---force --keep-empty-dirs --no-vignettes --no-manual --resave-data \
---no-resave-data --compact-vignettes"
+--force --keep-empty-dirs --no-build-vignettes --no-manual --resave-data \
+--no-resave-data --compact-vignettes --md5"
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
 
 		check)
 
 		    furtherOpts="$versOpts $helpOpts           \
--l --library -o --outdir				       \
+-l --library -o --output				       \
 --no-clean --no-codoc --no-examples --no-install --no-tests    \
---no-manual --no-vignettes --no-rebuild-vignettes --use-gct    \
---use-valgrind --timings --install-args --check-subdirs	       \
+--no-manual --no-vignettes --no-build-vignettes --use-gct    \
+--use-valgrind --timings --install-args --check-subdirs	--as-cran       \
 --extra-arch --multiarch --no-multiarch --force-multiarch"
 
 		    fileNames=$( compgen -f -X '!*.@(tar.gz|tgz)' -- "$cur" )
@@ -255,7 +255,7 @@ _R()
 		    ;;
 
 		Rprof)
-		    furtherOpts="$versOpts $helpOpts --total --self --min%total --min%self"
+		    furtherOpts="$versOpts $helpOpts --lines --total --self --linesonly --min%total --min%self"
 		    fileNames=$( compgen -f -- "$cur" )
 		    dirNames=$( compgen -d -- "$cur" )
 		    ;;
@@ -298,7 +298,7 @@ _R()
 
 		    else
 
-			furtherOpts="$versOpts $helpOpts --driver --encoding --options --pdf"
+			furtherOpts="$versOpts $helpOpts --driver --engine --encoding --options --pdf --compact"
 			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -317,7 +317,7 @@ _R()
 
 		    else
 
-			furtherOpts="$versOpts $helpOpts --encoding --options"
+			furtherOpts="$versOpts $helpOpts --engine --encoding --options"
 			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -333,12 +333,13 @@ _R()
 		    else
 
 			furtherOpts="$versOpts $helpOpts --ldflags  --cppflags  \
+--no-user-files --no-site-files                                                 \
 BLAS_LIBS CC CFLAGS CPICFLAGS CPP CPPFLAGS CXX CXXCPP CXXFLAGS			\
 CXXPICFLAGS DYLIB_EXT DYLIB_LD DYLIB_LDFLAGS F77 FFLAGS FLIBS			\
 FPICFLAGS FC FCFLAGS FCPICFLAGS JAR JAVA JAVAC JAVAH JAVA_HOME			\
 JAVA_LIBS JAVA_CPPFLAGS LAPACK_LIBS LIBnn LDFLAGS OBJC OBJCFLAGS MAKE		\
 SAFE_FFLAGS SHLIB_CFLAGS SHLIB_CXXLD SHLIB_CXXLDFLAGS SHLIB_EXT			\
-SHLIB_FFLAGS SHLIB_LD SHLIB_LDFLAGS SHLIB_FCLD, SHLIB_FCLDFLAGS			\
+SHLIB_FFLAGS SHLIB_LD SHLIB_LDFLAGS SHLIB_FCLD SHLIB_FCLDFLAGS			\
 TCLTK_CPPFLAGS TCLTK_LIBS"
 
 		    fi
@@ -391,7 +392,7 @@ TCLTK_CPPFLAGS TCLTK_LIBS"
 	esac
     fi
 
-    ## need some removal,
+    ## need some removal
 
     ## take out options already given
     for (( i=1; i<=$COMP_CWORD-1; ++i )) ; do
