@@ -1,4 +1,4 @@
-### Copyright (C) 2005-2011 Deepayan Sarkar <Deepayan.Sarkar@R-project.org>
+### Copyright (C) 2005-2014 Deepayan Sarkar <Deepayan.Sarkar@R-project.org>
 ###
 ### This file provides programmable completion for R under the bash
 ### shell.  It is made available under the terms of the GNU General
@@ -9,7 +9,7 @@
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License, available at
-### http://www.gnu.org/licenses/gpl.txt, for more details.
+### http://www.gnu.org/licenses/licenses.html, for more details.
 
 
 ### NOTE: This does NOT provide completion for commands within R, only
