@@ -1,4 +1,4 @@
-### Copyright (C) 2005-2014 Deepayan Sarkar <Deepayan.Sarkar@R-project.org>
+## Copyright (C) 2005-2014 Deepayan Sarkar <Deepayan.Sarkar@R-project.org>
 ###
 ### This file provides programmable completion for R under the bash
 ### shell.  It is made available under the terms of the GNU General
@@ -299,8 +299,9 @@ _R()
 		    else
 
 			furtherOpts="$versOpts $helpOpts --driver --engine --encoding --options --pdf --compact"
-			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw)' -- "$cur" )
-			dirNames=$( compgen -d -- "$cur" )
+			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw|Rmd|rmd)' -- "$cur" )
+			dirNames=""
+			## dirNames=$( compgen -d -- "$cur" )
 
 		    fi
 		    ;;
@@ -318,8 +319,9 @@ _R()
 		    else
 
 			furtherOpts="$versOpts $helpOpts --engine --encoding --options"
-			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw)' -- "$cur" )
-			dirNames=$( compgen -d -- "$cur" )
+			fileNames=$( compgen -f -X '!*.@(Rnw|rnw|Snw|snw|Rmd|rmd)' -- "$cur" )
+			dirNames=""
+			## dirNames=$( compgen -d -- "$cur" )
 
 		    fi
 		    ;;
@@ -384,6 +386,12 @@ TCLTK_CPPFLAGS TCLTK_LIBS"
 		;;
 	    -d|--debugger) ## allow commands
 		furtherOpts=$( compgen -c -- "$cur" )
+		;;
+
+	    -f|--file)
+		fileNames=$( compgen -f -X '!*.@(R|r|S|s)' -- "$cur" )
+		dirNames=""
+		## dirNames=$( compgen -d -- "$cur" )
 		;;
 
 	    *) ## NOT 'R CMD <something> ': see comments above
