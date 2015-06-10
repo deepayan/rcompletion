@@ -1,7 +1,0 @@
-
-
-# This is a hand-written shell script
-
-echo "Sorry, the 'rcompletion' package does not work under Windows."
-exit 1
-

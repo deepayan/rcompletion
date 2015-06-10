@@ -1,6 +1,0 @@
-
-useDynLib(rcompletion, .registration = TRUE)
-
-
-       
-
