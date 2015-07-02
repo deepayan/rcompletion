@@ -214,7 +214,8 @@ _R()
 --no-libs --no-data --no-help --no-demo --no-exec --no-inst		\
 --no-multiarch --libs-only --data-compress --resave-data		\
 --compact-docs --with-keep.source --without-keep.source --byte-compile	\
---no-clean-on-error --merge-multiarch"
+--no-byte-compile --no-test-load --no-clean-on-error --merge-multiarch  \
+--built-timestamp"
 			fileNames=$( compgen -f -X '!*.@(tar.gz|tgz)' -- "$cur" )
 			dirNames=$( compgen -d -- "$cur" )
 
@@ -242,8 +243,9 @@ _R()
 		    furtherOpts="$versOpts $helpOpts           \
 -l --library -o --output				       \
 --no-clean --no-codoc --no-examples --no-install --no-tests    \
---no-manual --no-vignettes --no-build-vignettes --use-gct    \
---use-valgrind --timings --install-args --check-subdirs	--as-cran       \
+--no-manual --no-vignettes --no-build-vignettes --run-dontrun  \
+--run-donttest --use-gct --use-valgrind --timings              \
+--install-args --test-dir --check-subdirs --as-cran            \
 --extra-arch --multiarch --no-multiarch --force-multiarch"
 
 		    fileNames=$( compgen -f -X '!*.@(tar.gz|tgz)' -- "$cur" )
